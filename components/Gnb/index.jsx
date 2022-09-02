@@ -5,24 +5,27 @@ import Offcanvas from "react-bootstrap/Offcanvas";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { auth } from "../../fBase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 function Navigation() {
+  const user = useSelector((state) => state.user.user);
+  const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const onLogOutClick = (e) => {
     e.preventDefault();
     signOut(auth);
+    router.push("/");
   };
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      // console.log(user);
-      if (user) {
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-      }
-    });
-  }, []);
+    if (user) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [user]);
+
   return (
     <>
       <Navbar key="md" bg="light" expand="md" className="mb-3 py-4">
@@ -48,11 +51,6 @@ function Navigation() {
             </Offcanvas.Header>
             <Offcanvas.Body>
               <Nav className="justify-content-end flex-grow-1">
-                <Link href="/">
-                  <Nav.Link className="mx-2" href="/">
-                    Home
-                  </Nav.Link>
-                </Link>
                 <Link href="/shop">
                   <Nav.Link className="mx-2" href="/shop">
                     Shop
@@ -76,7 +74,7 @@ function Navigation() {
                 {isLoggedIn ? (
                   <>
                     <Nav.Link className="mx-2" onClick={onLogOutClick}>
-                      logOut
+                      LogOut
                     </Nav.Link>
                     <Link href="/myPage">
                       <Nav.Link className="mx-2" href="/myPage">
@@ -92,7 +90,7 @@ function Navigation() {
                 ) : (
                   <Link href="/login">
                     <Nav.Link className="mx-2" href="/login">
-                      logIn
+                      LogIn
                     </Nav.Link>
                   </Link>
                 )}

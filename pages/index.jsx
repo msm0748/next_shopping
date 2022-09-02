@@ -5,6 +5,9 @@ import styles from "../styles/Home.module.css";
 export default function Home() {
     return (
         <>
+            <Head>
+                <title>옷이 이쁘달</title>
+            </Head>
             <div>안녕</div>
         </>
     );
